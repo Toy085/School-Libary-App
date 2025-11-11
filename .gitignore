@@ -152,3 +152,27 @@ src/lib/db/database.db
 
 # Firebase service account (sensitive!)
 firebase-service-account.json
+
+# Firebase Configuration
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+.env
+
+# Firebase CLI Generated
+.firebase/
+
+# Node.js Dependencies (if applicable)
+node_modules/
+
+# Build Output (adjust based on your project)
+dist/
+build/
+public/
+
+# Local Development & Editor Files
+.vscode/
+.idea/
+*.log
+*.tmp
+*.bak
