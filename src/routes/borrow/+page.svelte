@@ -7,6 +7,44 @@
 	$: user = $currentUser; // reactive
 
 	$: isLoggedIn = !!user;
+
+	let query = '';
+	let books: any[] = [];
+	let loading = false;
+	let error = '';
+
+	async function searchBooks(q: string) {
+		loading = true;
+		error = '';
+		books = [];
+
+		try {
+			const res = await fetch(
+				`https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=10`,
+			);
+			if (!res.ok) throw new Error('Failed to fetch books');
+
+			const data = await res.json();
+			books = data.docs.map((doc: any) => ({
+				name: doc.title,
+				author: doc.author_name?.[0] || 'Unknown',
+				publisher: doc.publisher?.[0] || 'Unknown',
+				year: doc.first_publish_year || 'N/A',
+				imageUrl: doc.cover_i
+					? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
+					: 'https://via.placeholder.com/128x190?text=No+Cover',
+			}));
+		} catch (err: any) {
+			error = err.message;
+		} finally {
+			loading = false;
+		}
+	}
+
+	function handleSubmit(e: Event) {
+		e.preventDefault();
+		searchBooks(query);
+	}
 </script>
 
 <h1 class="BorrowTitleText">Borrow</h1>

@@ -138,3 +138,17 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 node_modules
+
+# Mac / Windows
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode
+.idea
+
+# Local SQLite database file
+src/lib/db/database.db
+
+# Firebase service account (sensitive!)
+firebase-service-account.json
