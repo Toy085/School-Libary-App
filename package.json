@@ -1,11 +1,11 @@
 {
-	"name": "sveltekit-electron",
+	"name": "Library-App",
 	"version": "0.0.1",
 	"private": true,
-	"description": "Minimal Sveltekit + Electron starter template.",
+	"description": "An app for managing a school library, built with SvelteKit and Electron.",
 	"main": "src/electron.cjs",
 	"type": "module",
-	"author": "Braden Wiggins",
+	"author": "Toy085",
 	"scripts": {
 		"dev": "cross-env NODE_ENV=dev npm run dev:all",
 		"dev:all": "concurrently -n=svelte,electron -c='#ff3e00',blue \"npm run dev:svelte\" \"npm run dev:electron\"",
