@@ -8,7 +8,8 @@
 			await signOut(auth);
 			currentUser.set(null); // update store
 			alert('Logged out successfully!');
-		} catch (err: any) { // Type annotation valid in TS
+		} catch (err: any) {
+			// Type annotation valid in TS
 			console.error('Logout failed:', err.message);
 		}
 	}
@@ -19,5 +20,8 @@
 <style>
 	button {
 		margin-top: 10px;
+		margin-bottom: 10px;
+		margin: 0 auto;
+		display: block;
 	}
 </style>

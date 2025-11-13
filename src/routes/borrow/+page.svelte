@@ -70,6 +70,7 @@
 	<p class="BorrowText">Scan or type in the ISBN no. of the book to continue.</p>
 	<div class="input-group mb-3 BorrowInputText">
 		<input
+			bind:value={query}
 			type="text"
 			class="form-control"
 			placeholder="book ISBN no."

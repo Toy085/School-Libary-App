@@ -1,21 +1,24 @@
 <script lang="ts">
-    import { currentUser } from '$lib/stores/user';
-    import { get } from 'svelte/store';
-    import LogOutButton from '$lib/logout.svelte';
+	import { currentUser } from '$lib/stores/user';
+	import { get } from 'svelte/store';
+	import LogOutButton from '$lib/logout.svelte';
 
-  let user;
-  $: user = $currentUser; // reactive
+	let user;
+	$: user = $currentUser; // reactive
 
-  $: isLoggedIn = !!user;
+	$: isLoggedIn = !!user;
 </script>
 
 <h1>Profile</h1>
 
 {#if isLoggedIn}
-  <p>Welcome, {$currentUser.email}!</p>
-  <LogOutButton />
+	<p>Welcome, {$currentUser.email}!</p>
+	<LogOutButton />
 {:else}
-  <p>Please <a href="/login">log in</a> to access this page.</p>
+	<p>
+		Please <a href="/login">log in</a>
+		to access this page.
+	</p>
 {/if}
 
 <a href="/" class="BackButton">
@@ -23,6 +26,9 @@
 </a>
 
 <style>
+	* {
+		text-align: center;
+	}
 	.BackButton {
 		margin: 0 auto;
 		display: block;
