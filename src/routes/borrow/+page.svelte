@@ -1,12 +1,9 @@
 <script lang="ts">
 	import { currentUser } from '$lib/stores/user';
-	import { get } from 'svelte/store';
 	import LogOutButton from '$lib/logout.svelte';
+	import BookBorrowCard from '$lib/BookBorrowCard.svelte';
 
-	let user;
-	$: user = $currentUser; // reactive
-
-	$: isLoggedIn = !!user;
+	$: isLoggedIn = !!$currentUser;
 
 	let query = '';
 	let books: any[] = [];
@@ -19,9 +16,13 @@
 		books = [];
 
 		try {
-			const res = await fetch(
-				`https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=10`,
-			);
+			const isISBN = /^\d{10}(\d{3})?$/.test(q);
+			const url = isISBN
+				? `https://openlibrary.org/search.json?isbn=${q}`
+				: `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}`;
+
+			const res = await fetch(url);
+
 			if (!res.ok) throw new Error('Failed to fetch books');
 
 			const data = await res.json();
@@ -42,7 +43,6 @@
 	}
 
 	function handleSubmit(e: Event) {
-		e.preventDefault();
 		searchBooks(query);
 	}
 </script>
@@ -68,17 +68,42 @@
 	</p>
 {:else}
 	<p class="BorrowText">Scan or type in the ISBN no. of the book to continue.</p>
-	<div class="input-group mb-3 BorrowInputText">
-		<input
-			bind:value={query}
-			type="text"
-			class="form-control"
-			placeholder="book ISBN no."
-			aria-label="Username"
-			aria-describedby="basic-addon1"
-		/>
-		<button class="btn btn-outline-secondary" type="button" id="button-addon1">Done</button>
+	<form class="d-flex borrow" role="form" on:submit|preventDefault={handleSubmit}>
+		<div class="input-group mb-3 BorrowInputText">
+			<input
+				bind:value={query}
+				type="text"
+				class="form-control"
+				placeholder="book ISBN no."
+				aria-label="Username"
+				aria-describedby="basic-addon1"
+			/>
+			<button
+				on:click={() => searchBooks(query)}
+				class="btn btn-outline-secondary"
+				type="button"
+				id="button-addon1"
+			>
+				Done
+			</button>
+		</div>
+	</form>
+	<div class="results">
+		{#each books as book}
+			<BookBorrowCard
+				name={book.name}
+				author={book.author}
+				year={book.year}
+				publisher={book.publisher}
+				imageUrl={book.imageUrl}
+			/>
+		{/each}
 	</div>
+
+	{#if error}
+		<p class="BorrowText" style="color:red">{error}</p>
+	{/if}
+	<LogOutButton />
 {/if}
 
 <a href="/" class="BackButton">
@@ -102,5 +127,10 @@
 		margin: 0 auto;
 		display: block;
 		text-align: center;
+	}
+	.results {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
 	}
 </style>
