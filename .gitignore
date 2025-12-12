@@ -151,6 +151,8 @@ Thumbs.db
 src/lib/db/database.db
 src/lib/db/library.db
 *.db
+*.sqlite
+src/lib/db/*.db
 
 # Firebase service account (sensitive!)
 firebase-service-account.json
