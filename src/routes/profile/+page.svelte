@@ -4,7 +4,7 @@
 	import LogOutButton from '$lib/logout.svelte';
 
 	let user;
-	$: user = $currentUser; // reactive
+	$: user = $currentUser;
 
 	$: isLoggedIn = !!user;
 </script>

@@ -3,6 +3,12 @@
 	import Logo from '$lib/Logo.svelte';
 	import { browser } from '$app/environment';
 
+	import { currentUser } from '$lib/stores/user';
+	let user;
+	$: user = $currentUser;
+
+	$: isLoggedIn = !!user;
+
 	let desktop: string;
 
 	if (window.electron && browser) {
@@ -55,6 +61,24 @@
 		</div>
 	</div>
 </main>
+
+{#if isLoggedIn}
+	{#if $currentUser.admin === 1}
+		<h2>ADMIN ACCOUNT: {$currentUser.email}</h2>
+		<a href="/admin">
+			<button type="button" class="btn btn-primary">
+				<i class="bi" />
+				Admin Panel
+			</button>
+		</a>
+	{:else}
+		<h2>
+			Logged in as: <strong>{$currentUser.email}</strong>
+		</h2>
+	{/if}
+{:else}
+	<h2 style="text-align: center;">You are not logged in.</h2>
+{/if}
 
 <style>
 	@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css');

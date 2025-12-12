@@ -23,7 +23,8 @@ export async function POST({ request }) {
             id: user.id,
             name: user.name,
             email: user.email,
-            verified: !!user.verified
+            verified: !!user.verified,
+            admin: user.admin
         });
     } catch (err) {
         console.error('Login error:', err);

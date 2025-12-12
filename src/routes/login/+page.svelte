@@ -68,6 +68,7 @@
 				id: data.id,
 				email: data.email,
 				verified: data.verified,
+				admin: data.admin,
 			});
 
 			alert('Logged in successfully!');
