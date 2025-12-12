@@ -13,7 +13,7 @@
 
 {#if isLoggedIn}
 	<p>Welcome, {$currentUser.email}! Scan the book you'd like to return.</p>
-    <p class="BorrowText">Scan or type in the ISBN no. of the book to continue.</p>
+	<p class="BorrowText">Scan or type in the ISBN no. of the book to continue.</p>
 	<div class="input-group mb-3 BorrowInputText">
 		<input
 			type="text"
@@ -37,11 +37,14 @@
 </a>
 
 <style>
+	* {
+		text-align: center;
+	}
 	.ReturnTitleText {
 		text-align: center;
 		font-weight: bold;
 	}
-    .BorrowInputText {
+	.BorrowInputText {
 		padding: 5px;
 		width: 50vw;
 		margin: 0 auto;
