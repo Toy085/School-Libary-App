@@ -149,6 +149,8 @@ Thumbs.db
 
 # Local SQLite database file
 src/lib/db/database.db
+src/lib/db/library.db
+*.db
 
 # Firebase service account (sensitive!)
 firebase-service-account.json

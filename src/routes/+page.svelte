@@ -64,7 +64,7 @@
 
 {#if isLoggedIn}
 	{#if $currentUser.admin === 1}
-		<h2>ADMIN ACCOUNT: {$currentUser.email}</h2>
+		<h2>ADMIN ACCOUNT: {$currentUser.name}</h2>
 		<a href="/admin">
 			<button type="button" class="btn btn-primary">
 				<i class="bi" />
@@ -73,7 +73,7 @@
 		</a>
 	{:else}
 		<h2>
-			Logged in as: <strong>{$currentUser.email}</strong>
+			Logged in as: <strong>{$currentUser.name}</strong>
 		</h2>
 	{/if}
 {:else}

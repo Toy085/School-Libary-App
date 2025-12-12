@@ -12,7 +12,7 @@
 <h1 class="ReturnTitleText">Return</h1>
 
 {#if isLoggedIn}
-	<p>Welcome, {$currentUser.email}! Scan the book you'd like to return.</p>
+	<p>Welcome, {$currentUser.name}! Scan the book you'd like to return.</p>
 	<p class="BorrowText">Scan or type in the ISBN no. of the book to continue.</p>
 	<div class="input-group mb-3 BorrowInputText">
 		<input

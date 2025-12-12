@@ -1,6 +1,6 @@
 <script lang="ts">
-	const allowedDomain = '@osloskolen.no';
-	let name = 'temp';
+	const allowedDomain = ''; // e.g., '@example.com'
+	let name = '';
 	let email = '';
 	let password = '';
 	let errorMessage = '';
@@ -63,10 +63,10 @@
 				return;
 			}
 
-			// Update currentUser store
 			currentUser.set({
 				id: data.id,
 				email: data.email,
+				name: data.name,
 				verified: data.verified,
 				admin: data.admin,
 			});

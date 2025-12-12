@@ -12,7 +12,7 @@
 <h1>Profile</h1>
 
 {#if isLoggedIn}
-	<p>Welcome, {$currentUser.email}!</p>
+	<p>Welcome, {$currentUser.name}!</p>
 	<LogOutButton />
 {:else}
 	<p>

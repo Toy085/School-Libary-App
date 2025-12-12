@@ -10,7 +10,7 @@
 <h1>Admin Page</h1>
 
 {#if isLoggedIn && user.admin === 1}
-	<p>Welcome to the admin page, {$currentUser.email}!</p>
+	<p>Welcome to the admin page, {$currentUser.name}!</p>
 	<!-- Admin functionalities go here -->
 	<LogOutButton />
 {:else}
