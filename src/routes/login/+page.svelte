@@ -1,16 +1,11 @@
 <script lang="ts">
-	import { auth } from '$lib/firebase';
-	import {
-		createUserWithEmailAndPassword,
-		signInWithEmailAndPassword,
-		sendEmailVerification,
-	} from 'firebase/auth';
-
+	const allowedDomain = '@osloskolen.no';
+	let name = 'temp';
 	let email = '';
 	let password = '';
-	const allowedDomain = '@osloskolen.no';
 	let errorMessage = '';
-
+	import { currentUser } from '$lib/stores/user';
+	// SIGN UP
 	async function signUp() {
 		errorMessage = '';
 
@@ -18,39 +13,66 @@
 			errorMessage = `Only emails ending with ${allowedDomain} are allowed.`;
 			return;
 		}
-
-		try {
-			const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-			const user = userCredential.user;
-
-			// Send email verification
-			await sendEmailVerification(user);
-
-			alert(
-				'User created successfully! Please check your email to verify your account before logging in.',
-			);
-		} catch (err: any) {
-			errorMessage = err.message;
+		if (!name.trim()) {
+			errorMessage = 'Name is required';
+			return;
 		}
-	}
-
-	async function login(event: Event) {
-		event.preventDefault(); // prevent page reload
-		errorMessage = '';
 
 		try {
-			const userCredential = await signInWithEmailAndPassword(auth, email, password);
-			const user = userCredential.user;
+			const res = await fetch('/api/register', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ name, email, password }),
+			});
 
-			if (!user.emailVerified) {
-				alert('Please verify your email before logging in.');
-				await auth.signOut(); // log out unverified user
+			const data = await res.json();
+
+			if (!res.ok) {
+				errorMessage = data.error || 'Registration failed.';
 				return;
 			}
 
+			alert('Account created! An admin must verify your account before you can log in.');
+		} catch (err) {
+			errorMessage = 'Something went wrong.';
+		}
+	}
+
+	// LOGIN
+	async function login(event: Event) {
+		event.preventDefault();
+		errorMessage = '';
+
+		console.log({ email, password });
+		try {
+			const res = await fetch('/api/login', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email, password }),
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				errorMessage = data.error || 'Login failed.';
+				return;
+			}
+
+			if (!data.verified) {
+				errorMessage = 'Your account is not verified yet.';
+				return;
+			}
+
+			// Update currentUser store
+			currentUser.set({
+				id: data.id,
+				email: data.email,
+				verified: data.verified,
+			});
+
 			alert('Logged in successfully!');
-		} catch (err: any) {
-			errorMessage = err.message;
+		} catch (err) {
+			errorMessage = 'Something went wrong.';
 		}
 	}
 </script>
@@ -58,6 +80,17 @@
 <h1 class="ProfileTitleText">Login</h1>
 
 <form class="LoginDiv" on:submit={login}>
+	<div class="mb-3 InputText">
+		<label for="name" class="form-label">Name</label>
+		<input
+			type="text"
+			class="form-control"
+			id="name"
+			placeholder="John Smith"
+			bind:value={name}
+			required
+		/>
+	</div>
 	<div class="mb-3 InputText">
 		<label for="exampleInputEmail1" class="form-label">Email address</label>
 		<input

@@ -6,6 +6,9 @@ db.prepare(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    verified INTEGER DEFAULT 0,
+    admin INTEGER DEFAULT 0,
     library_card_number TEXT UNIQUE
   )
 `).run();

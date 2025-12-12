@@ -26,6 +26,7 @@
 		"@azure/msal-browser": "^4.26.1",
 		"@azure/msal-node": "^3.8.1",
 		"@popperjs/core": "^2.11.8",
+		"bcryptjs": "^3.0.3",
 		"better-sqlite3": "^12.4.1",
 		"bootstrap": "^5.3.8",
 		"bootstrap-icons": "^1.13.1",

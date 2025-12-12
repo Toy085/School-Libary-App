@@ -1,16 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { auth } from '$lib/firebase';
-	import { onAuthStateChanged, type User } from 'firebase/auth';
 	import { currentUser } from '$lib/stores/user';
 
-	onMount(() => {
-		const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
-			currentUser.set(user);
-		});
-
-		return () => unsubscribe(); // clean up on unmount
-	});
 	let ready: boolean = false;
 	onMount(() => (ready = true));
 </script>
