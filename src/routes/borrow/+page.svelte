@@ -16,21 +16,18 @@
 		books = [];
 
 		try {
-			const isISBN = /^\d{10}(\d{3})?$/.test(q);
-			const url = isISBN
-				? `https://openlibrary.org/search.json?isbn=${q}`
-				: `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}`;
-
-			const res = await fetch(url);
+			const res = await fetch(`/api/openlibrary?q=${encodeURIComponent(q)}`);
 
 			if (!res.ok) throw new Error('Failed to fetch books');
 
 			const data = await res.json();
+
 			books = data.docs.map((doc: any) => ({
 				name: doc.title,
 				author: doc.author_name?.[0] || 'Unknown',
 				publisher: doc.publisher?.[0] || 'Unknown',
 				year: doc.first_publish_year || 'N/A',
+				ISBN: doc.isbn && doc.isbn.length > 0 ? doc.isbn[0] : null,
 				imageUrl: doc.cover_i
 					? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
 					: 'https://via.placeholder.com/128x190?text=No+Cover',
@@ -43,6 +40,7 @@
 	}
 
 	function handleSubmit(e: Event) {
+		if (query.trim() === '') return;
 		searchBooks(query);
 	}
 </script>
@@ -89,12 +87,15 @@
 		</div>
 	</form>
 	<div class="results">
+		{#if loading}
+			<p class="BorrowText">Loading...</p>
+		{/if}
 		{#each books as book}
 			<BookBorrowCard
 				name={book.name}
 				author={book.author}
 				year={book.year}
-				publisher={book.publisher}
+				ISBN={book.ISBN}
 				imageUrl={book.imageUrl}
 			/>
 		{/each}
@@ -129,8 +130,11 @@
 		text-align: center;
 	}
 	.results {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: flex-start;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 10px;
+		overflow-y: auto;
+		max-height: 500px;
+		padding: 10px;
 	}
 </style>

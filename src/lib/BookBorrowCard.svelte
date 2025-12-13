@@ -1,42 +1,58 @@
 <script lang="ts">
+	import { currentUser } from '$lib/stores/user';
+	import { get } from 'svelte/store';
 	export let name: string;
 	export let author: string;
-	export let publisher: string;
-	export let year: int;
+	export let ISBN: number | string;
+	export let year: number | string;
 	export let imageUrl: string;
-	
-	function borrowBook() {
-		alert(`You have borrowed "${name}" by ${author}.`);
-	}
 
-	/*async function borrowBook(book: any) {
-		const res = await fetch('/api/borrow', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				isbn: book.ISBN || book.isbn, // ensure this matches your database field
-				title: book.name,
-				author: book.author,
-			}),
-		});
+	let loading = false;
 
-		const data = await res.json();
+	async function borrowBook() {
+		if (loading) return;
+		loading = true;
 
-		if (!res.ok) {
-			alert('Error: ' + data.error);
-			return;
+		try {
+			const user = get(currentUser);
+			if (!user) {
+				alert('You must be logged in to borrow a book.');
+				return;
+			}
+
+			const res = await fetch('/api/borrow', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					title: name,
+					author,
+					ISBN,
+					userId: user.id,
+				}),
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				alert('Error: ' + (data.error || 'Unknown error'));
+				return;
+			}
+
+			alert(`You have borrowed "${name}" successfully!`);
+		} catch (err: any) {
+			alert('Error: ' + (err.message || 'Unknown error'));
+		} finally {
+			loading = false;
 		}
-
-		alert('Book borrowed successfully!');
-	}*/
+	}
 </script>
 
 <div class="bookCard">
 	<img src={imageUrl} alt={name} class="bookCardImage" />
 	<h5>{name}</h5>
 	<h6>{author}</h6>
-	<!--<p>{publisher}</p>-->
-	<p>{year}</p>
+	<h6>{ISBN || 'No ISBN'}</h6>
+	<p>{year || 'N/A'}</p>
 	<button on:click={borrowBook} class="btn btn-primary">Borrow</button>
 </div>
 
@@ -67,13 +83,8 @@
 		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 	}
 	.bookCardImage {
-		border-radius: var(--bs-border-radius);
-		height: 80%;
+		height: 200px;
 		width: 100%;
-		max-height: 200px;
 		object-fit: contain;
-		display: block;
-		margin: 0 auto;
-		padding-top: 5px;
 	}
 </style>
