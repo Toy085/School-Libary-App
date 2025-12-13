@@ -13,6 +13,14 @@
 
 {#if isLoggedIn}
 	<p>Welcome, {$currentUser.name}!</p>
+	{#if $currentUser.admin === 1}
+		<a href="/admin">
+			<button type="button" class="btn btn-primary">
+				<i class="bi" />
+				Admin Panel
+			</button>
+		</a>
+	{/if}
 	<LogOutButton />
 {:else}
 	<p>
@@ -27,6 +35,11 @@
 
 <style>
 	* {
+		text-align: center;
+	}
+	a {
+		margin: 5px auto;
+		display: block;
 		text-align: center;
 	}
 	.BackButton {

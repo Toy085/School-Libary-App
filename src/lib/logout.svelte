@@ -12,7 +12,7 @@
 	button {
 		margin-top: 10px;
 		margin-bottom: 10px;
-		margin: 0 auto;
+		margin: 5px auto;
 		display: block;
 	}
 </style>
