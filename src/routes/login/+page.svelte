@@ -133,6 +133,8 @@
 	}
 	.LoginDiv {
 		padding: 10px;
+		margin: 0 auto;
+		max-width: 600px;
 	}
 	.InputText {
 		width: 50vw;
