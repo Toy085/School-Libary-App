@@ -6,7 +6,7 @@ export async function POST({ request }) {
 
   db.prepare(`
     UPDATE users
-    SET verified = 1
+    SET admin = 1
     WHERE id = ?
   `).run(userId);
 

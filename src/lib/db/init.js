@@ -19,9 +19,10 @@ db.prepare(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     author TEXT NOT NULL,
-    ISBN INTERGER UNIQUE NOT NULL,
+    ISBN INTEGER UNIQUE NOT NULL,
     user_id INTEGER,
     borrowed_at TEXT,
+    returned_at TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id)
   )
 `).run();

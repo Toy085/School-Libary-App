@@ -43,7 +43,6 @@
 		event.preventDefault();
 		errorMessage = '';
 
-		console.log({ email, password });
 		try {
 			const res = await fetch('/api/login', {
 				method: 'POST',
