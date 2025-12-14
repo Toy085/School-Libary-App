@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Counter from '$lib/Counter.svelte';
-	import Logo from '$lib/Logo.svelte';
 	import { browser } from '$app/environment';
 
 	import { currentUser } from '$lib/stores/user';

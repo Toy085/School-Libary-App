@@ -1,10 +1,21 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	const allowedDomain = ''; // e.g., '@example.com'
 	let name = '';
 	let email = '';
 	let password = '';
 	let errorMessage = '';
 	import { currentUser } from '$lib/stores/user';
+
+	$: isLoggedIn = !!$currentUser; // true if $currentUser is an object, false if null
+
+	// Example of using the status:
+	$: {
+		if ($currentUser) {
+			goto('/');
+		}
+	}
 	// SIGN UP
 	async function signUp() {
 		errorMessage = '';
@@ -33,6 +44,7 @@
 			}
 
 			alert('Account created! An admin must verify your account before you can log in.');
+			goto('/');
 		} catch (err) {
 			errorMessage = 'Something went wrong.';
 		}
@@ -71,6 +83,7 @@
 			});
 
 			alert('Logged in successfully!');
+			goto('/');
 		} catch (err) {
 			errorMessage = 'Something went wrong.';
 		}
@@ -88,8 +101,8 @@
 			id="name"
 			placeholder="John Smith"
 			bind:value={name}
-			required
 		/>
+		<div id="nameHelp" class="form-text">Name not required for login.</div>
 	</div>
 	<div class="mb-3 InputText">
 		<label for="exampleInputEmail1" class="form-label">Email address</label>
