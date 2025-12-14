@@ -24,7 +24,8 @@
 	<LogOutButton />
 {:else}
 	<p>
-		Please <a href="/login">log in</a>
+		Please
+		<a href="/login">log in</a>
 		to access this page.
 	</p>
 {/if}

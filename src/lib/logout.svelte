@@ -10,9 +10,7 @@
 
 <style>
 	button {
-		margin-top: 10px;
-		margin-bottom: 10px;
-		margin: 5px auto;
+		margin: 10px auto;
 		display: block;
 	}
 </style>
