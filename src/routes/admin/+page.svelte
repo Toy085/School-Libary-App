@@ -69,8 +69,27 @@
 
 {#if isLoggedIn && user.admin === 1}
 	<p>Welcome to the admin page, {$currentUser.name}!</p>
-	<input type="radio" bind:group={tableType} value={0} id="users" checked />
-	<input type="radio" bind:group={tableType} value={1} id="books" />
+	<input
+		type="radio"
+		bind:group={tableType}
+		value={0}
+		class="btn-check"
+		name="options"
+		id="option1"
+		autocomplete="off"
+		checked
+	/>
+	<label class="btn btn-secondary" for="option1">Users</label>
+	<input
+		type="radio"
+		bind:group={tableType}
+		value={1}
+		class="btn-check"
+		name="options"
+		id="optionBooks"
+		autocomplete="off"
+	/>
+	<label class="btn btn-secondary" for="optionBooks">Books</label>
 
 	<div class="table-container">
 		{#if tableType === 0}
@@ -158,7 +177,7 @@
 		text-align: center;
 	}
 	.table-container {
-		max-height: 400px;
+		max-height: 350px;
 		overflow-y: auto;
 		overflow-x: auto;
 		margin: 0 auto;
@@ -185,6 +204,29 @@
 	}
 
 	.user-table tr:nth-child(even) {
+		background-color: whitesmoke;
+	}
+
+	.book-table {
+		width: 100%;
+		max-height: 50px;
+		max-width: 1200px;
+		margin: 0 auto;
+		border-collapse: collapse;
+		text-align: left;
+	}
+
+	.book-table th,
+	.book-table td {
+		border: 2px solid black;
+		padding: 0.75rem 1rem;
+	}
+
+	.book-table th {
+		background-color: grey;
+	}
+
+	.book-table tr:nth-child(even) {
 		background-color: whitesmoke;
 	}
 
