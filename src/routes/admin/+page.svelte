@@ -63,6 +63,32 @@
 
 		users = users.filter((user) => user.id !== u.id);
 	}
+
+	// Inside your <script> block in +page.svelte
+
+	// ... (Existing functions like deleteUser, etc.)
+
+	async function returnBook(b) {
+		if (!b.user_id) {
+			alert('This book is not currently borrowed.');
+			return;
+		}
+
+		if (!confirm(`Return book "${b.title}" borrowed by ${b.user_name}?`)) return;
+
+		const res = await fetch('/api/return', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ bookId: b.id }),
+		});
+
+		if (res.ok) {
+			await loadBooks();
+		} else {
+			const errorData = await res.json();
+			alert(`Failed to return book: ${errorData.error || 'Server error'}`);
+		}
+	}
 </script>
 
 <h1>Admin Page</h1>
@@ -155,7 +181,15 @@
 							<td>{b.borrowed_at}</td>
 							<td>{b.returned_at}</td>
 							<td>{b.ISBN}</td>
-							<td />
+							<td>
+								<button
+									class="btn btn-danger"
+									on:click={() => returnBook(b)}
+									disabled={!b.user_id || b.returned_at}
+								>
+									Return
+								</button>
+							</td>
 						</tr>
 					{/each}
 				</tbody>
