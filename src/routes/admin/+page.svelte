@@ -176,12 +176,12 @@
 				<tbody>
 					{#each books as b}
 						<tr>
-							<td>{b.user_id}</td>
-							<td>{b.user_name}</td>
-							<td>{b.user_email}</td>
+							<td>{b.user_id || '-'}</td>
+							<td>{b.user_name || '-'}</td>
+							<td>{b.user_email || '-'}</td>
 							<td>{b.title}</td>
-							<td>{b.borrowed_at}</td>
-							<td>{b.returned_at}</td>
+							<td>{b.borrowed_at ? b.borrowed_at : 'Available'}</td>
+							<td>{b.returned_at || '-'}</td>
 							<td>{b.ISBN}</td>
 							<td>
 								<button

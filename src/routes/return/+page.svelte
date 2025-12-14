@@ -3,10 +3,81 @@
 	import { get } from 'svelte/store';
 	import LogOutButton from '$lib/logout.svelte';
 
+	type BookEntry = {
+		id: number;
+		title: string;
+		ISBN: string;
+		user_id: number | null;
+		user_name: string | null;
+		borrowed_at: string | null;
+		returned_at: string | null;
+	};
+
 	let user;
-	$: user = $currentUser; // reactive
+	let bookISBN = '';
+	let books: BookEntry[] = [];
+	$: user = $currentUser;
 
 	$: isLoggedIn = !!user;
+
+	loadBooks();
+	async function loadBooks() {
+		const res = await fetch('/api/books');
+		if (res.ok) {
+			books = await res.json();
+		} else {
+			alert('Failed to load books');
+		}
+	}
+
+	async function returnBook(b: BookEntry) {
+		const res = await fetch('/api/return', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ bookId: b.id }),
+		});
+
+		if (res.ok) {
+			alert(`Successfully returned "${b.title}"!`);
+			bookISBN = '';
+			await loadBooks(); // Refresh the list from the server
+		} else {
+			const errorData = await res.json();
+			alert(`Failed to return book: ${errorData.error || 'Server error'}`);
+		}
+	}
+
+	async function handleReturn() {
+		if (!bookISBN) {
+			alert('Please enter a book ISBN.');
+			return;
+		}
+		const bookToReturn = books.find((b) => String(b.ISBN) === bookISBN && b.user_id !== null);
+
+		if (bookToReturn) {
+			if (
+				!confirm(
+					`Return book "${bookToReturn.title}" borrowed by ${bookToReturn.user_name}?`,
+				)
+			)
+				return;
+			await returnBook(bookToReturn);
+		} else {
+			const foundBookByISBN = books.find((b) => String(b.ISBN) === bookISBN);
+
+			if (!foundBookByISBN) {
+				alert(`Error: No book found with ISBN "${bookISBN}" in the catalog.`);
+			} else if (foundBookByISBN.user_id === null) {
+				alert(
+					`Error: Book "${foundBookByISBN.title}" is already available (not borrowed).`,
+				);
+			} else {
+				alert(
+					`Error: Book "${foundBookByISBN.title}" appears to be borrowed but has a return date recorded. Contact an administrator.`,
+				);
+			}
+		}
+	}
 </script>
 
 <h1 class="ReturnTitleText">Return</h1>
@@ -21,8 +92,19 @@
 			placeholder="book ISBN no."
 			aria-label="Username"
 			aria-describedby="basic-addon1"
+			bind:value={bookISBN}
+			on:keydown={(e) => {
+				if (e.key === 'Enter') handleReturn();
+			}}
 		/>
-		<button class="btn btn-outline-secondary" type="button" id="button-addon1">Done</button>
+		<button
+			class="btn btn-outline-secondary"
+			type="button"
+			id="button-addon1"
+			on:click={handleReturn}
+		>
+			Done
+		</button>
 	</div>
 	<LogOutButton />
 {:else}

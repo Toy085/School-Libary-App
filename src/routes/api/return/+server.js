@@ -11,7 +11,7 @@ export async function POST({ request }) {
 
         db.prepare(`
             UPDATE books
-            SET user_id = NULL, returned_at = datetime('now')
+            SET user_id = NULL, borrowed_at = NULL, returned_at = datetime('now')
             WHERE id = ?
         `).run(bookId);
 
