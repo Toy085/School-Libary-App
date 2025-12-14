@@ -95,27 +95,29 @@
 
 {#if isLoggedIn && user.admin === 1}
 	<p>Welcome to the admin page, {$currentUser.name}!</p>
-	<input
-		type="radio"
-		bind:group={tableType}
-		value={0}
-		class="btn-check"
-		name="options"
-		id="option1"
-		autocomplete="off"
-		checked
-	/>
-	<label class="btn btn-secondary" for="option1">Users</label>
-	<input
-		type="radio"
-		bind:group={tableType}
-		value={1}
-		class="btn-check"
-		name="options"
-		id="optionBooks"
-		autocomplete="off"
-	/>
-	<label class="btn btn-secondary" for="optionBooks">Books</label>
+	<div class="radio-group">
+		<input
+			type="radio"
+			bind:group={tableType}
+			value={0}
+			class="btn-check"
+			name="options"
+			id="option1"
+			autocomplete="off"
+			checked
+		/>
+		<label class="btn btn-secondary" for="option1">Users</label>
+		<input
+			type="radio"
+			bind:group={tableType}
+			value={1}
+			class="btn-check"
+			name="options"
+			id="optionBooks"
+			autocomplete="off"
+		/>
+		<label class="btn btn-secondary" for="optionBooks">Books</label>
+	</div>
 
 	<div class="table-container">
 		{#if tableType === 0}
@@ -210,8 +212,14 @@
 	* {
 		text-align: center;
 	}
+	.radio-group {
+		display: flex;
+		justify-content: center;
+		gap: 10px;
+		margin-bottom: 10px;
+	}
 	.table-container {
-		max-height: 350px;
+		max-height: 500px;
 		overflow-y: auto;
 		overflow-x: auto;
 		margin: 0 auto;
