@@ -17,10 +17,10 @@ db.prepare(`
 db.prepare(`
   CREATE TABLE IF NOT EXISTS books (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
     title TEXT NOT NULL,
     author TEXT NOT NULL,
     ISBN INTEGER UNIQUE NOT NULL,
-    user_id INTEGER,
     borrowed_at TEXT,
     returned_at TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id)

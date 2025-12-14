@@ -3,19 +3,32 @@
 	import { goto } from '$app/navigation';
 	import LogOutButton from '$lib/logout.svelte';
 
+	let tableType = 0; // 0: users, 1: books
+
 	import { currentUser } from '$lib/stores/user';
 	let user;
+	let books = [];
 	let users = [];
 	$: user = $currentUser;
 	$: isLoggedIn = !!user;
 	$: if (user?.admin === 1) {
 		loadUsers();
+		loadBooks();
 	}
 
 	async function loadUsers() {
 		const res = await fetch('/api/users');
 		users = await res.json();
 	}
+	async function loadBooks() {
+		const res = await fetch('/api/books');
+		if (res.ok) {
+			books = await res.json();
+		} else {
+			alert('Failed to load books');
+		}
+	}
+
 	function updateUser(id, props) {
 		users = users.map((u) => (u.id === id ? { ...u, ...props } : u));
 	}
@@ -56,45 +69,79 @@
 
 {#if isLoggedIn && user.admin === 1}
 	<p>Welcome to the admin page, {$currentUser.name}!</p>
+	<input type="radio" bind:group={tableType} value={0} id="users" checked />
+	<input type="radio" bind:group={tableType} value={1} id="books" />
+
 	<div class="table-container">
-		<table class="user-table">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Email</th>
-					<th>Verified?</th>
-					<th>Admin?</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each users as u}
+		{#if tableType === 0}
+			<table class="user-table">
+				<thead>
 					<tr>
-						<td>{u.id}</td>
-						<td>{u.name}</td>
-						<td>{u.email}</td>
-						<td>{u.verified ? 'Yes' : 'No'}</td>
-						<td>{u.admin ? 'Yes' : 'No'}</td>
-						<td>
-							{#if !u.verified}
-								<button class="btn btn-primary" on:click={() => verifyUser(u)}>
-									Verify
-								</button>
-							{/if}
-							{#if !u.admin}
-								<button class="btn btn-primary" on:click={() => adminUser(u)}>
-									Make Admin
-								</button>
-							{/if}
-							<button class="btn btn-danger" on:click={() => deleteUser(u)}>
-								Delete
-							</button>
-						</td>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Verified?</th>
+						<th>Admin?</th>
+						<th>Actions</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{#each users as u}
+						<tr>
+							<td>{u.id}</td>
+							<td>{u.name}</td>
+							<td>{u.email}</td>
+							<td>{u.verified ? 'Yes' : 'No'}</td>
+							<td>{u.admin ? 'Yes' : 'No'}</td>
+							<td>
+								{#if !u.verified}
+									<button class="btn btn-primary" on:click={() => verifyUser(u)}>
+										Verify
+									</button>
+								{/if}
+								{#if !u.admin}
+									<button class="btn btn-primary" on:click={() => adminUser(u)}>
+										Make Admin
+									</button>
+								{/if}
+								<button class="btn btn-danger" on:click={() => deleteUser(u)}>
+									Delete
+								</button>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{:else if tableType === 1}
+			<table class="book-table">
+				<thead>
+					<tr>
+						<th>User ID</th>
+						<th>User Name</th>
+						<th>User Email</th>
+						<th>Book Name</th>
+						<th>Borrowed</th>
+						<th>Returned</th>
+						<th>ISBN</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each books as b}
+						<tr>
+							<td>{b.user_id}</td>
+							<td>{b.user_name}</td>
+							<td>{b.user_email}</td>
+							<td>{b.title}</td>
+							<td>{b.borrowed_at}</td>
+							<td>{b.returned_at}</td>
+							<td>{b.ISBN}</td>
+							<td />
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{/if}
 	</div>
 
 	<LogOutButton />
