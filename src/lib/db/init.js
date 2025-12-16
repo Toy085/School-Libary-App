@@ -7,6 +7,7 @@ db.prepare(`
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
+    pin_hash TEXT,
     verified INTEGER DEFAULT 0,
     admin INTEGER DEFAULT 0,
     library_card_number TEXT UNIQUE

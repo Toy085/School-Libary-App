@@ -50,16 +50,18 @@
 
 {#if !isLoggedIn}
 	<p class="BorrowText">Scan or type in your library card to continue,</p>
-	<div class="input-group mb-3 BorrowInputText">
-		<input
-			type="text"
-			class="form-control"
-			placeholder="Library card no."
-			aria-label="Username"
-			aria-describedby="basic-addon1"
-		/>
-		<button class="btn btn-outline-secondary" type="button" id="button-addon1">Done</button>
-	</div>
+	<form>
+		<div class="input-group mb-3 BorrowInputText">
+			<input
+				type="text"
+				class="form-control"
+				placeholder="Library card no."
+				aria-label="Username"
+				aria-describedby="basic-addon1"
+			/>
+			<button class="btn btn-outline-secondary" type="button" id="button-addon1">Done</button>
+		</div>
+	</form>
 
 	<p class="BorrowText">
 		or <a href="/login">login</a>
@@ -87,25 +89,26 @@
 			</button>
 		</div>
 	</form>
-	<div class="results">
-		{#if loading}
-			<p class="BorrowText">Loading...</p>
-		{/if}
-		{#each books as book}
-			<BookBorrowCard
-				name={book.name}
-				author={book.author}
-				year={book.year}
-				ISBN={book.ISBN}
-				imageUrl={book.imageUrl}
-			/>
-		{/each}
-	</div>
 
-	{#if error}
-		<p class="BorrowText" style="color:red">{error}</p>
-	{/if}
 	<LogOutButton />
+{/if}
+<div class="results">
+	{#if loading}
+		<p class="BorrowText">Loading...</p>
+	{/if}
+	{#each books as book}
+		<BookBorrowCard
+			name={book.name}
+			author={book.author}
+			year={book.year}
+			ISBN={book.ISBN}
+			imageUrl={book.imageUrl}
+		/>
+	{/each}
+</div>
+
+{#if error}
+	<p class="BorrowText" style="color:red">{error}</p>
 {/if}
 
 <BackButton />
