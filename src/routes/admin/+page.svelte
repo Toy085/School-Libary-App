@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import LogOutButton from '$lib/logout.svelte';
+	import BackButton from '$lib/backButton.svelte';
 
 	let tableType = 0; // 0: users, 1: books
 
@@ -63,10 +64,6 @@
 
 		users = users.filter((user) => user.id !== u.id);
 	}
-
-	// Inside your <script> block in +page.svelte
-
-	// ... (Existing functions like deleteUser, etc.)
 
 	async function returnBook(b) {
 		if (!b.user_id) {
@@ -223,9 +220,7 @@
 	<p>You do not have permission to access this page.</p>
 {/if}
 
-<a href="/" class="BackButton">
-	<button type="button" class="btn btn-primary"><i class="bi bi-arrow-return-left" /></button>
-</a>
+<BackButton />
 
 <style>
 	* {
@@ -280,7 +275,7 @@
 	.book-table th,
 	.book-table td {
 		border: 2px solid black;
-		padding: 0.75rem 1rem;
+		padding: 0.3rem 0.5rem;
 	}
 
 	.book-table th {
@@ -289,11 +284,5 @@
 
 	.book-table tr:nth-child(even) {
 		background-color: whitesmoke;
-	}
-
-	.BackButton {
-		margin: 5 auto;
-		display: block;
-		text-align: center;
 	}
 </style>

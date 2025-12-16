@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import BackButton from '$lib/backButton.svelte';
 
 	const allowedDomain = ''; // e.g., '@example.com'
 	let name = '';
@@ -134,9 +135,7 @@
 	<p style="color:red; text-align:center;">{errorMessage}</p>
 {/if}
 
-<a href="/" class="BackButton">
-	<button type="button" class="btn btn-primary"><i class="bi bi-arrow-return-left" /></button>
-</a>
+<BackButton />
 
 <style>
 	.ProfileTitleText {
@@ -150,11 +149,5 @@
 	}
 	.InputText {
 		width: 50vw;
-	}
-
-	.BackButton {
-		margin: 0 auto;
-		display: block;
-		text-align: center;
 	}
 </style>

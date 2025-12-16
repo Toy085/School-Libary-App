@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import BookSearchCard from '$lib/BookSearchCard.svelte';
+	import BackButton from '$lib/backButton.svelte';
 
 	let query = '';
 	let books: any[] = [];
@@ -81,9 +82,7 @@
 	{/if}
 </div>
 
-<a href="/" class="BackButton">
-	<button type="button" class="btn btn-primary"><i class="bi bi-arrow-return-left" /></button>
-</a>
+<BackButton />
 
 <style>
 	.SearchTitleText {
@@ -104,11 +103,5 @@
 		justify-content: center;
 		gap: 1rem;
 		margin-top: 2rem;
-	}
-
-	.BackButton {
-		margin: 0 auto;
-		display: block;
-		text-align: center;
 	}
 </style>
