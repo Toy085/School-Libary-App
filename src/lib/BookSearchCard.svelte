@@ -1,17 +1,42 @@
 <script lang="ts">
-	export let name: string;
-	export let author: string;
-	export let publisher: string;
-	export let year: int;
-	export let imageUrl: string;
+	import { onMount } from 'svelte';
+	export let book: {
+		title: string;
+		author: string;
+		ISBN: number | string;
+		imageUrl: string;
+	};
+
+	let finalImageUrl = book.imageUrl;
+	const customPlaceholder =
+		'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';
+
+	function checkImageSize(event: Event) {
+		const img = event.target as HTMLImageElement;
+
+		// Define the minimum size threshold for a real book cover (e.g., 50 pixels wide)
+		const MIN_WIDTH = 50;
+
+		if (img.naturalWidth < MIN_WIDTH) {
+			finalImageUrl = customPlaceholder;
+		}
+	}
+	function handleError() {
+		finalImageUrl = customPlaceholder;
+	}
 </script>
 
 <div class="bookCard">
-	<img src={imageUrl} alt={name} class="bookCardImage" />
-	<h5>{name}</h5>
-	<h6>{author}</h6>
-	<p>{publisher}</p>
-	<p>{year}</p>
+	<img
+		src={finalImageUrl}
+		alt={book.title}
+		class="bookCardImage"
+		on:load={checkImageSize}
+		on:error={handleError}
+	/>
+	<h5>{book.title}</h5>
+	<h6>{book.author}</h6>
+	<p>{book.ISBN}</p>
 </div>
 
 <style>
@@ -27,7 +52,7 @@
 	}
 
 	.bookCard {
-		height: 350px;
+		height: 300px;
 		width: 12rem;
 		max-width: 100%;
 		background-color: var(--bs-teal);

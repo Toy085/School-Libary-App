@@ -20,6 +20,7 @@ db.prepare(`
     user_id INTEGER,
     title TEXT NOT NULL,
     author TEXT NOT NULL,
+    year INTEGER,
     ISBN INTEGER UNIQUE NOT NULL,
     borrowed_at TEXT,
     returned_at TEXT,

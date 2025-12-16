@@ -26,7 +26,7 @@
 				name: doc.title,
 				author: doc.author_name?.[0] || 'Unknown',
 				publisher: doc.publisher?.[0] || 'Unknown',
-				year: doc.first_publish_year || 'N/A',
+				year: doc.first_publish_year || null,
 				ISBN: doc.isbn && doc.isbn.length > 0 ? doc.isbn[0] : null,
 				imageUrl: doc.cover_i
 					? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
