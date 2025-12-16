@@ -13,6 +13,16 @@ db.prepare(`
   )
 `).run();
 
+db.exec(`
+    CREATE TABLE IF NOT EXISTS sessions (
+        session_id TEXT PRIMARY KEY NOT NULL,
+        user_id INTEGER NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        -- Link the session to a user, and delete the session if the user is deleted
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+`);
+
 // Create books table
 db.prepare(`
   CREATE TABLE IF NOT EXISTS books (

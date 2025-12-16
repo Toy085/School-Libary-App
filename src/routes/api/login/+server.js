@@ -2,8 +2,10 @@ import { db } from '$lib/db/client.js';
 import { json } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
 import '$lib/db/init.js';
+import { PUBLIC_SESSION_COOKIE_NAME } from '$env/static/public';
+import { randomUUID } from 'crypto'; 
 
-export async function POST({ request }) {
+export async function POST({ request, cookies }) { 
     try {
         const body = await request.json();
         const email = body?.email?.trim();
@@ -18,7 +20,19 @@ export async function POST({ request }) {
 
         const match = await bcrypt.compare(password, user.password_hash);
         if (!match) return json({ error: 'Invalid login.' }, { status: 400 });
+        
+        const sessionId = randomUUID();
 
+        db.prepare('INSERT INTO sessions (session_id, user_id) VALUES (?, ?)')
+            .run(sessionId, user.id);
+
+        cookies.set(PUBLIC_SESSION_COOKIE_NAME, sessionId, {
+            path: '/',
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production', 
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 * 7 // Session lasts 1 week
+        });
         return json({
             id: user.id,
             name: user.name,
@@ -26,8 +40,9 @@ export async function POST({ request }) {
             verified: !!user.verified,
             admin: user.admin
         });
+        
     } catch (err) {
         console.error('Login error:', err);
-        return json({ error: err.message || 'Server error' }, { status: 500 });
+        return json({ error: 'Internal Server Error during login.' }, { status: 500 });
     }
 }

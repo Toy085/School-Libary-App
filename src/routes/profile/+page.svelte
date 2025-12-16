@@ -1,13 +1,43 @@
 <script lang="ts">
 	import { currentUser } from '$lib/stores/user';
-	import { get } from 'svelte/store';
 	import LogOutButton from '$lib/logout.svelte';
 	import BackButton from '$lib/backButton.svelte';
 
 	let user;
 	$: user = $currentUser;
-
 	$: isLoggedIn = !!user;
+
+	let libraryCardNumber = user?.library_card_number || '';
+
+	async function updateUser(event) {
+		event.preventDefault();
+
+		try {
+			const res = await fetch('/api/updateuser', {
+				method: 'PUT', // Or 'PATCH'
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					library_card_number: libraryCardNumber,
+				}),
+			});
+
+			if (res.ok) {
+				const updatedUserData = await res.json();
+
+				currentUser.set(updatedUserData);
+
+				alert('Profile updated successfully!');
+			} else {
+				const errorData = await res.json();
+				alert(`Error updating profile: ${errorData.message || res.statusText}`);
+			}
+		} catch (error) {
+			console.error('Network or system error:', error);
+			alert('An unexpected error occurred during update.');
+		}
+	}
 </script>
 
 <h1>Profile</h1>
@@ -22,6 +52,21 @@
 			</button>
 		</a>
 	{/if}
+	<form on:submit={updateUser}>
+		<div class="input-group mb-3">
+			<label for="library">Library Card Number:</label>
+			<input
+				type="text"
+				class="form-control"
+				id="library"
+				name="library"
+				bind:value={libraryCardNumber}
+			/>
+		</div>
+		<br />
+
+		<button type="submit" class="btn btn-success">Update Profile</button>
+	</form>
 	<LogOutButton />
 {:else}
 	<p>
