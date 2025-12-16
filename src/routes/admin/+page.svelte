@@ -89,6 +89,22 @@
 			alert(`Failed to return book: ${errorData.error || 'Server error'}`);
 		}
 	}
+	async function deleteBook(b) {
+		if (!confirm(`Delete book "${b.title}"?`)) return;
+
+		const res = await fetch('/api/deletebook', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ bookId: b.id }),
+		});
+
+		if (res.ok) {
+			books = books.filter((book) => book.id !== b.id);
+		} else {
+			const errorData = await res.json();
+			alert(`Failed to delete book: ${errorData.error || 'Server error'}`);
+		}
+	}
 </script>
 
 <h1>Admin Page</h1>
@@ -190,6 +206,9 @@
 									disabled={!b.user_id || b.returned_at}
 								>
 									Return
+								</button>
+								<button class="btn btn-danger" on:click={() => deleteBook(b)}>
+									Delete
 								</button>
 							</td>
 						</tr>
