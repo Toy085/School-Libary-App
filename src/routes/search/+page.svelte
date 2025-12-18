@@ -90,18 +90,19 @@
 		text-align: center;
 	}
 	.alert {
-		margin: 0 auto;
-		width: 75vw;
+		margin: 10px auto;
+		width: 40rem;
 	}
 	.search {
 		margin: 0 auto;
 		width: 50vw;
 	}
 	.results {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 1rem;
-		margin-top: 2rem;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+		gap: 5px;
+		overflow-y: auto;
+		max-height: 500px;
+		padding: 10px;
 	}
 </style>

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	export let book: {
 		title: string;
 		author: string;
@@ -61,8 +60,8 @@
 		transition: transform 0.2s, box-shadow 0.2s;
 	}
 	.bookCard:hover {
-		transform: scale(1.05);
-		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+		transform: scale(1.002);
+		box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
 	}
 	.bookCardImage {
 		border-radius: var(--bs-border-radius);
