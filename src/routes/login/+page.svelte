@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import BackButton from '$lib/backButton.svelte';
+	import { onMount } from 'svelte';
 
 	const allowedDomain = ''; // e.g., '@example.com'
 	let name = '';
@@ -11,11 +12,12 @@
 
 	$: isLoggedIn = !!$currentUser;
 
-	$: {
+	onMount(() => {
 		if ($currentUser) {
 			goto('/');
 		}
-	}
+	});
+
 	// SIGN UP
 	async function signUp() {
 		errorMessage = '';
@@ -43,7 +45,11 @@
 				return;
 			}
 
-			alert('Account created! An admin must verify your account before you can log in.');
+			if (data.admin) {
+				alert('Root Admin account created! You are verified automatically. Please log in.');
+			} else {
+				alert('Account created! An admin must verify your account before you can log in.');
+			}
 			goto('/');
 		} catch (err) {
 			errorMessage = 'Something went wrong.';
