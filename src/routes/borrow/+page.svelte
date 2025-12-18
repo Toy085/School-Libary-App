@@ -49,6 +49,7 @@
 <h1 class="BorrowTitleText">Borrow</h1>
 
 {#if !isLoggedIn}
+	<!-->
 	<p class="BorrowText">Scan or type in your library card to continue,</p>
 	<form>
 		<div class="input-group mb-3 BorrowInputText">
@@ -61,10 +62,11 @@
 			/>
 			<button class="btn btn-outline-secondary" type="button" id="button-addon1">Done</button>
 		</div>
-	</form>
+	</form> -->
 
 	<p class="BorrowText">
-		or <a href="/login">login</a>
+		<!--or-->
+		<a href="/login">login</a>
 		with your account
 	</p>
 {:else}
