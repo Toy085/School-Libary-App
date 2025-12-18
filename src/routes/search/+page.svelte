@@ -55,8 +55,8 @@
 <h1 class="SearchTitleText">Search</h1>
 
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-	<strong>NOT</strong>
-	all books are available due to each book being added as they are borrowed.
+	<strong>Heads up!</strong>
+	Not all books are listed yet.
 	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />
 </div>
 
