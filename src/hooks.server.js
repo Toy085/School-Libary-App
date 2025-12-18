@@ -1,4 +1,4 @@
-import { db } from '$lib/db/client'; 
+import { db } from '$lib/server/db';; 
 import { PUBLIC_SESSION_COOKIE_NAME } from '$env/static/public';
 
 /** @type {import('@sveltejs/kit').Handle} */
