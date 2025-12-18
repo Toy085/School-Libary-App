@@ -14,7 +14,7 @@
 
 		try {
 			const res = await fetch('/api/updateuser', {
-				method: 'PUT', // Or 'PATCH'
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -52,7 +52,7 @@
 			</button>
 		</a>
 	{/if}
-	<form on:submit={updateUser}>
+	<!--<form on:submit={updateUser}>
 		<div class="input-group mb-3">
 			<label for="library">Library Card Number:</label>
 			<input
@@ -66,7 +66,7 @@
 		<br />
 
 		<button type="submit" class="btn btn-success">Update Profile</button>
-	</form>
+	</form>-->
 	<LogOutButton />
 {:else}
 	<p>
