@@ -1,11 +1,12 @@
 {
-	"name": "Library-App",
+	"name": "library-app",
 	"version": "0.0.1",
 	"private": true,
 	"description": "An app for managing a school library, built with SvelteKit and Electron.",
 	"main": "src/electron.cjs",
 	"type": "module",
 	"author": "Toy085",
+	"productName": "School Library Manager",
 	"scripts": {
 		"dev": "cross-env NODE_ENV=dev npm run dev:all",
 		"dev:all": "concurrently -n=svelte,electron -c='#ff3e00',blue \"npm run dev:svelte\" \"npm run dev:electron\"",
