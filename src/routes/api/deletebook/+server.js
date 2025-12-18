@@ -1,4 +1,4 @@
-import { db } from '$lib/db/client.js';
+import { db } from '$lib/server/db.js';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request }) {

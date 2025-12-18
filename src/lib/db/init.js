@@ -1,4 +1,4 @@
-import { db } from './client.js';
+import { db } from '$lib/server/db';
 
 // Create users table
 db.prepare(`
