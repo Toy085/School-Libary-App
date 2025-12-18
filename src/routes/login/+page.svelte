@@ -9,9 +9,8 @@
 	let errorMessage = '';
 	import { currentUser } from '$lib/stores/user';
 
-	$: isLoggedIn = !!$currentUser; // true if $currentUser is an object, false if null
+	$: isLoggedIn = !!$currentUser;
 
-	// Example of using the status:
 	$: {
 		if ($currentUser) {
 			goto('/');
