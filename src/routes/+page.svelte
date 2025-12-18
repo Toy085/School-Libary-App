@@ -74,9 +74,7 @@
 			Logged in as: <strong>{$currentUser.name}</strong>
 		</h2>
 	{/if}
-{:else}
-	<h2 style="text-align: center;">You are not logged in.</h2>
-{/if}
+{:else}{/if}
 
 <style>
 	@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css');
