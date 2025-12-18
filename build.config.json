@@ -1,15 +1,22 @@
 {
-	"appId": "com.example.app",
-	"productName": "Sveltekit Electron",
-	"directories": {
-		"output": "dist"
-	},
-	"files": [
-		"src/electron.cjs",
-		"src/preload.cjs",
-		{
-			"from": "build",
-			"to": ""
-		}
-	]
+  "appId": "com.example.app",
+  "productName": "Sveltekit Electron",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "src/electron.cjs",
+    "src/preload.cjs",
+    {
+      "from": "build",
+      "to": ""
+    }
+  ],
+  "win": {
+    "target": "nsis"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  }
 }

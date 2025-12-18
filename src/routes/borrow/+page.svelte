@@ -71,7 +71,7 @@
 	</p>
 {:else}
 	<p class="BorrowText">Scan or type in the ISBN no. of the book to continue.</p>
-	<form class="d-flex borrow" role="form" on:submit|preventDefault={handleSubmit}>
+	<form class="d-flex borrow" on:submit|preventDefault={handleSubmit}>
 		<div class="input-group mb-3 BorrowInputText">
 			<input
 				bind:value={query}

@@ -1,120 +1,91 @@
-// electron.cjs
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const contextMenu = require('electron-context-menu');
 const windowStateManager = require('electron-window-state');
 const serve = require('electron-serve');
 
-const serveURL = serve({ directory: '.' });
-const port = process.env.PORT || 5173;
 const dev = !app.isPackaged;
+const serveURL = serve({ directory: 'build' });
 
-let mainWindow; // global reference
+let mainWindow;
 
-// Disable context menu features for kiosk
+// Disable context menu features
 contextMenu({
-    showInspectElement: false,
-    showSaveImageAs: false,
-    showCopyImage: false,
-    showSearchWithGoogle: false,
+  showInspectElement: false,
+  showSaveImageAs: false,
+  showCopyImage: false,
+  showSearchWithGoogle: false,
 });
 
-// Create the main window
 function createWindow() {
-    const windowState = windowStateManager({
-        defaultWidth: 1280,
-        defaultHeight: 720,
-    });
+  const windowState = windowStateManager({
+    defaultWidth: 1280,
+    defaultHeight: 720,
+  });
 
-    // Assign to global mainWindow
-    mainWindow = new BrowserWindow({
-        fullscreen: true,
-        kiosk: true,
-        frame: false,
-        resizable: false,
-        minimizable: false,
-        maximizable: false,
-        closable: false,
-        backgroundColor: 'whitesmoke',
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: true,
-            devTools: false,
-            preload: path.join(__dirname, 'preload.cjs'),
-        },/*
-        x: windowState.x,
-        y: windowState.y,
-        width: windowState.width,
-        height: windowState.height,*/
-    });;
-    windowState.manage(mainWindow);
+  mainWindow = new BrowserWindow({
+    fullscreen: true,
+    kiosk: true,
+    frame: false,
+    backgroundColor: 'whitesmoke',
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.cjs'),
+      nodeIntegration: false,
+      contextIsolation: true,
+      devTools: dev,
+    },
+  });
 
-    mainWindow.once('ready-to-show', () => {
-        mainWindow.show();
-        mainWindow.focus();
-		mainWindow.maximize();
-		mainWindow.setFullScreen(true);
-    });
+  windowState.manage(mainWindow);
 
-    // Auto-restart if renderer crashes
-    mainWindow.webContents.on('crashed', () => {
-        console.error('Renderer crashed. Restarting...');
-        mainWindow.destroy();
-        createWindow();
-    });
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+    mainWindow.focus();
+  });
 
-    // Prevent manual closing
-    mainWindow.on('close', (e) => {
-        e.preventDefault();
-        mainWindow.show();
-    });
+  mainWindow.webContents.on('crashed', () => {
+    console.error('Renderer crashed. Restarting...');
+    if (!mainWindow.isDestroyed()) mainWindow.destroy();
+    createWindow();
+  });
 
-    // Load URL
-    if (dev) {
-        loadVite(port);
-    } else {
-        serveURL(mainWindow);
+  // Block common exit shortcuts
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (
+      (input.key === 'F4' && input.alt) ||
+      (input.key === 'W' && input.control) ||
+      (input.key === 'Q' && input.meta)
+    ) {
+      event.preventDefault();
     }
+  });
+
+  if (dev) {
+    loadVite(5173);
+  } else {
+    serveURL(mainWindow);
+  }
 }
 
-// Load Vite dev server (with retry if not ready)
 function loadVite(port) {
-    mainWindow.loadURL(`http://localhost:${port}`).catch((e) => {
-        console.log('Error loading URL, retrying...', e);
-        setTimeout(() => loadVite(port), 200);
-    });
+  mainWindow.loadURL(`http://localhost:${port}`).catch(() => {
+    setTimeout(() => loadVite(port), 200);
+  });
 }
 
-// Safe IPC handling
+// IPC
 ipcMain.on('to-main', (event, count) => {
-    if (!mainWindow || mainWindow.isDestroyed()) {
-        console.error('Main window not ready.');
-        return;
-    }
-    mainWindow.webContents.send('from-main', `next count is ${count + 1}`);
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  mainWindow.webContents.send('from-main', count + 1);
 });
 
-// Disable common keyboard shortcuts to prevent exit
-app.on('browser-window-focus', () => {
-    if (!mainWindow) return;
-    mainWindow.webContents.on('before-input-event', (event, input) => {
-        // Block Alt+F4, Ctrl+W, Cmd+Q
-        if ((input.key === 'F4' && input.alt) ||
-            (input.key === 'W' && input.control) ||
-            (input.key === 'Q' && input.meta)) {
-            event.preventDefault();
-        }
-    });
-});
-
-// App lifecycle
-app.on('ready', createWindow);
+// Lifecycle
+app.whenReady().then(createWindow);
 
 app.on('activate', () => {
-    if (!mainWindow) createWindow();
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
 app.on('window-all-closed', () => {
-    // In kiosk mode, this should never happen
-    if (process.platform !== 'darwin') app.quit();
+  if (process.platform !== 'darwin') app.quit();
 });

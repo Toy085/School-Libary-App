@@ -74,7 +74,7 @@
 			Logged in as: <strong>{$currentUser.name}</strong>
 		</h2>
 	{/if}
-{:else}{/if}
+{/if}
 
 <style>
 	@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css');
