@@ -1,11 +1,12 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
-const config = defineConfig({
+export default defineConfig({
   plugins: [sveltekit()],
   ssr: {
-    noExternal: ['better-sqlite3'], 
+    external: ['better-sqlite3']
   },
+  optimizeDeps: {
+    exclude: ['better-sqlite3']
+  }
 });
-
-export default config;

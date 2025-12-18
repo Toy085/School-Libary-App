@@ -1,11 +1,14 @@
 import Database from 'better-sqlite3';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { building } from '$app/environment';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+let dbInstance = null;
 
-// Point to your database file
-const dbPath = path.join(__dirname, 'library.db');
+if (!building) {
+    try {
+        dbInstance = new Database('library.db');
+    } catch (e) {
+        console.error("Could not open database:", e);
+    }
+}
 
-export const db = new Database(dbPath);
+export const db = dbInstance;

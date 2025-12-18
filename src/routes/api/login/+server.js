@@ -6,6 +6,9 @@ import { PUBLIC_SESSION_COOKIE_NAME } from '$env/static/public';
 import { randomUUID } from 'crypto'; 
 
 export async function POST({ request, cookies }) { 
+    if (!db) {
+        return json({ error: 'Database not available' }, { status: 500 });
+    }
     try {
         const body = await request.json();
         const email = body?.email?.trim();
