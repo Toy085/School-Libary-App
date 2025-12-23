@@ -1,6 +1,6 @@
 {
   "appId": "com.example.app",
-  "productName": "Sveltekit Electron",
+  "productName": "library-app",
   "directories": {
     "output": "dist"
   },

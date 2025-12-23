@@ -81,14 +81,7 @@
 				aria-label="Username"
 				aria-describedby="basic-addon1"
 			/>
-			<button
-				on:click={() => searchBooks(query)}
-				class="btn btn-outline-secondary"
-				type="button"
-				id="button-addon1"
-			>
-				Done
-			</button>
+			<button class="btn btn-outline-secondary" type="submit" id="button-addon1">Done</button>
 		</div>
 	</form>
 
