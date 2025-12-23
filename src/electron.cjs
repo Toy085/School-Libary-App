@@ -62,8 +62,10 @@ function createWindow() {
 
   if (dev) {
     loadVite(5173);
+    //mainWindow.webContents.openDevTools();
   } else {
     serveURL(mainWindow);
+    //mainWindow.webContents.openDevTools();
   }
 }
 

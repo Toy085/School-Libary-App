@@ -8,6 +8,7 @@
 	"author": "Toy085",
 	"productName": "School Library Manager",
 	"scripts": {
+		"postinstall": "electron-builder install-app-deps",
 		"dev": "cross-env NODE_ENV=dev npm run dev:all",
 		"dev:all": "concurrently -n=svelte,electron -c='#ff3e00',blue \"npm run dev:svelte\" \"npm run dev:electron\"",
 		"dev:svelte": "vite dev",
@@ -35,8 +36,6 @@
 		"electron-reloader": "^1.2.3",
 		"electron-serve": "^1.1.0",
 		"electron-window-state": "^5.0.3",
-		"firebase": "^12.5.0",
-		"firebase-admin": "^13.6.0",
 		"jquery": "^3.7.1"
 	},
 	"devDependencies": {
