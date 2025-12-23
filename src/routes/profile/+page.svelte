@@ -2,10 +2,18 @@
 	import { currentUser } from '$lib/stores/user';
 	import LogOutButton from '$lib/logout.svelte';
 	import BackButton from '$lib/backButton.svelte';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	let user;
 	$: user = $currentUser;
 	$: isLoggedIn = !!user;
+
+	onMount(() => {
+		if (!$currentUser) {
+			goto('/login');
+		}
+	});
 
 	let libraryCardNumber = user?.library_card_number || '';
 

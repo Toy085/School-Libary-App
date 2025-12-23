@@ -5,7 +5,7 @@ const windowStateManager = require('electron-window-state');
 const serve = require('electron-serve');
 
 const dev = !app.isPackaged;
-const serveURL = serve({ directory: 'build' });
+const serveURL = serve({ directory: '.' });
 
 let mainWindow;
 
@@ -25,8 +25,8 @@ function createWindow() {
 
   mainWindow = new BrowserWindow({
     fullscreen: true,
-    kiosk: true,
-    frame: false,
+    kiosk: false, // Set to true to enable kiosk mode
+    frame: true, // Set to false for a frameless window
     backgroundColor: 'whitesmoke',
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
