@@ -32,45 +32,35 @@
 		}
 
 		try {
-			const res = await fetch('/api/register', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, email, password }),
-			});
+			// CALL THE BRIDGE INSTEAD OF FETCH
+			const data = await window.electron.invoke('auth:register', { name, email, password });
 
-			const data = await res.json();
-
-			if (!res.ok) {
+			if (!data.success) {
 				errorMessage = data.error || 'Registration failed.';
 				return;
 			}
 
 			if (data.admin) {
-				alert('Root Admin account created! You are verified automatically. Please log in.');
+				alert('Root Admin account created! Please log in.');
 			} else {
-				alert('Account created! An admin must verify your account before you can log in.');
+				alert('Account created! An admin must verify your account.');
 			}
 			goto('/');
 		} catch (err) {
-			errorMessage = 'Something went wrong.';
+			errorMessage = 'Database connection failed.';
 		}
 	}
 
 	// LOGIN
-	async function login(event: Event) {
+	async function login(event) {
 		event.preventDefault();
 		errorMessage = '';
 
 		try {
-			const res = await fetch('/api/login', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email, password }),
-			});
+			// CALL THE BRIDGE INSTEAD OF FETCH
+			const data = await window.electron.invoke('auth:login', { email, password });
 
-			const data = await res.json();
-
-			if (!res.ok) {
+			if (!data.success) {
 				errorMessage = data.error || 'Login failed.';
 				return;
 			}

@@ -81,6 +81,65 @@ ipcMain.on('to-main', (event, count) => {
   mainWindow.webContents.send('from-main', count + 1);
 });
 
+const Database = require('better-sqlite3');
+const bcrypt = require('bcryptjs'); // You have this in package.json
+
+// Initialize DB in a writable location
+const dbPath = path.join(app.getPath('userData'), 'library.db');
+const db = new Database(dbPath);
+
+// Ensure Table exists
+db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT UNIQUE,
+        password_hash TEXT,
+        verified INTEGER DEFAULT 0,
+        admin INTEGER DEFAULT 0
+    );
+`);
+
+// 1. Handle Registration
+ipcMain.handle('auth:register', async (event, { name, email, password }) => {
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        // Check if this is the first user (make them admin)
+        const userCount = db.prepare('SELECT count(*) as count FROM users').get().count;
+        const isAdmin = userCount === 0 ? 1 : 0;
+        const isVerified = isAdmin; // Auto-verify the first admin
+
+        const stmt = db.prepare('INSERT INTO users (name, email, password_hash, admin, verified) VALUES (?, ?, ?, ?, ?)');
+        const info = stmt.run(name, email, hashedPassword, isAdmin, isVerified);
+        
+        return { success: true, admin: isAdmin, verified: isVerified };
+    } catch (err) {
+        return { success: false, error: err.message.includes('UNIQUE') ? 'Email already exists' : err.message };
+    }
+});
+
+// 2. Handle Login
+ipcMain.handle('auth:login', async (event, { email, password }) => {
+    try {
+        const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+        if (!user) return { success: false, error: 'User not found' };
+
+        const valid = await bcrypt.compare(password, user.password_hash);
+        if (!valid) return { success: false, error: 'Incorrect password' };
+
+        return { 
+            success: true, 
+            id: user.id, 
+            email: user.email, 
+            name: user.name, 
+            verified: user.verified, 
+            admin: user.admin 
+        };
+    } catch (err) {
+        return { success: false, error: err.message };
+    }
+});
+
 // Lifecycle
 app.whenReady().then(createWindow);
 

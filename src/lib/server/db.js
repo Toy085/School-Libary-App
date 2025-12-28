@@ -1,26 +1,36 @@
 import Database from 'better-sqlite3';
 import { building } from '$app/environment';
 import path from 'path';
-import fs from 'fs'; // You need to import fs to handle file system operations
+import fs from 'fs';
 
 let dbInstance = null;
 
 if (!building) {
     try {
-        const dbPath = path.resolve('data', 'library.db'); // Path to your DB file
-        
-        // Get the directory where the database will be stored
-        const dbDir = path.dirname(dbPath);
+        let dbPath;
 
-        // Ensure the directory exists
-        if (!fs.existsSync(dbDir)) {
-            fs.mkdirSync(dbDir, { recursive: true }); // Create the directory if it doesn't exist
+        // 1. Determine the correct writable directory
+        if (process.versions.electron) {
+            // We are running inside Electron
+            // We use the 'userData' folder which is always writable
+            const { app } = require('electron'); 
+            dbPath = path.join(app.getPath('userData'), 'library.db');
+        } else {
+            // we are in development mode (npm run dev)
+            dbPath = path.resolve('data', 'library.db');
         }
 
-        // Initialize database (create if not exists)
+        const dbDir = path.dirname(dbPath);
+
+        // 2. Ensure the directory exists
+        if (!fs.existsSync(dbDir)) {
+            fs.mkdirSync(dbDir, { recursive: true });
+        }
+
+        // 3. Initialize database
         dbInstance = new Database(dbPath);
         
-        // Ensure the table exists by creating it if it doesn't
+        // 4. Setup Tables
         dbInstance.exec(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,6 +43,8 @@ if (!building) {
                 library_card_number TEXT UNIQUE
             );
         `);
+
+        console.log("Database initialized at:", dbPath);
     } catch (e) {
         console.error("Could not open database:", e);
     }
