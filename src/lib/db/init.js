@@ -33,7 +33,7 @@ if (!building && db) {
       title TEXT NOT NULL,
       author TEXT NOT NULL,
       year INTEGER,
-      ISBN INTEGER UNIQUE NOT NULL,
+      ISBN TEXT UNIQUE NOT NULL,
       borrowed_at TEXT,
       returned_at TEXT,
       FOREIGN KEY (user_id) REFERENCES users(id)

@@ -18,88 +18,48 @@
 	}
 
 	async function loadUsers() {
-		const res = await fetch('/api/users');
-		users = await res.json();
-	}
-	async function loadBooks() {
-		const res = await fetch('/api/books');
-		if (res.ok) {
-			books = await res.json();
-		} else {
-			alert('Failed to load books');
-		}
+		// Updated to use Electron Bridge
+		users = await window.electron.invoke('admin:get-users');
 	}
 
-	function updateUser(id, props) {
-		users = users.map((u) => (u.id === id ? { ...u, ...props } : u));
+	async function loadBooks() {
+		// Updated to use Electron Bridge
+		books = await window.electron.invoke('admin:get-books');
 	}
 
 	async function verifyUser(u) {
-		await fetch('/api/verify', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ userId: u.id }),
-		});
-
-		updateUser(u.id, { verified: 1 });
+		const res = await window.electron.invoke('admin:verify-user', u.id);
+		if (res.success) updateUser(u.id, { verified: 1 });
 	}
-	async function adminUser(u) {
-		await fetch('/api/makeadmin', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ userId: u.id }),
-		});
 
-		updateUser(u.id, { admin: 1 });
+	async function adminUser(u) {
+		const res = await window.electron.invoke('admin:make-admin', u.id);
+		if (res.success) updateUser(u.id, { admin: 1 });
 	}
 
 	async function deleteUser(u) {
 		if (!confirm(`Delete user ${u.email}?`)) return;
-
-		await fetch('/api/deleteuser', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ userId: u.id }),
-		});
-
-		users = users.filter((user) => user.id !== u.id);
+		const res = await window.electron.invoke('admin:delete-user', u.id);
+		if (res.success) users = users.filter((user) => user.id !== u.id);
 	}
 
 	async function returnBook(b) {
-		if (!b.user_id) {
-			alert('This book is not currently borrowed.');
-			return;
-		}
+		if (!b.user_id) return;
+		if (!confirm(`Return "${b.title}"?`)) return;
 
-		if (!confirm(`Return book "${b.title}" borrowed by ${b.user_name}?`)) return;
-
-		const res = await fetch('/api/return', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ bookId: b.id }),
-		});
-
-		if (res.ok) {
+		const res = await window.electron.invoke('admin:return-book', b.id);
+		if (res.success) {
 			await loadBooks();
 		} else {
-			const errorData = await res.json();
-			alert(`Failed to return book: ${errorData.error || 'Server error'}`);
+			alert('Failed to return book');
 		}
 	}
+
 	async function deleteBook(b) {
 		if (!confirm(`Delete book "${b.title}"?`)) return;
-
-		const res = await fetch('/api/deletebook', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ bookId: b.id }),
-		});
-
-		if (res.ok) {
+		const res = await window.electron.invoke('admin:delete-book', b.id);
+		if (res.success) {
 			books = books.filter((book) => book.id !== b.id);
-		} else {
-			const errorData = await res.json();
-			alert(`Failed to delete book: ${errorData.error || 'Server error'}`);
 		}
 	}
 </script>

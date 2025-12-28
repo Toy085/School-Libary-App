@@ -17,11 +17,10 @@
 		books = [];
 
 		try {
-			const res = await fetch(`/api/openlibrary?q=${encodeURIComponent(q)}`);
+			// USE BRIDGE
+			const data = await window.electron.invoke('api:openlibrary', q);
 
-			if (!res.ok) throw new Error('Failed to fetch books');
-
-			const data = await res.json();
+			if (data.error) throw new Error(data.error);
 
 			books = data.docs.map((doc: any) => ({
 				name: doc.title,
@@ -49,7 +48,7 @@
 <h1 class="BorrowTitleText">Borrow</h1>
 
 {#if !isLoggedIn}
-	<!-->
+	<!--
 	<p class="BorrowText">Scan or type in your library card to continue,</p>
 	<form>
 		<div class="input-group mb-3 BorrowInputText">

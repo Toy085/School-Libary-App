@@ -23,28 +23,20 @@
 
 	loadBooks();
 	async function loadBooks() {
-		const res = await fetch('/api/books');
-		if (res.ok) {
-			books = await res.json();
-		} else {
-			alert('Failed to load books');
-		}
+		// USE BRIDGE
+		books = await window.electron.invoke('db:get-books');
 	}
 
 	async function returnBook(b: BookEntry) {
-		const res = await fetch('/api/return', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ bookId: b.id }),
-		});
+		// USE BRIDGE
+		const res = await window.electron.invoke('db:return-book', b.id);
 
-		if (res.ok) {
+		if (res.success) {
 			alert(`Successfully returned "${b.title}"!`);
 			bookISBN = '';
-			await loadBooks(); // Refresh the list from the server
+			await loadBooks();
 		} else {
-			const errorData = await res.json();
-			alert(`Failed to return book: ${errorData.error || 'Server error'}`);
+			alert(`Failed to return book: ${res.error}`);
 		}
 	}
 

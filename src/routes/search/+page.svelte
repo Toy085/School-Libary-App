@@ -11,17 +11,16 @@
 		loadBooks();
 	});
 	async function loadBooks() {
-		const res = await fetch('/api/books');
-		if (res.ok) {
-			books = await res.json();
-
-			books = books.map((book: any) => ({
+		try {
+			// USE BRIDGE
+			const data = await window.electron.invoke('db:get-books');
+			books = data.map((book: any) => ({
 				...book,
 				imageUrl: getImageUrl(book.ISBN),
 			}));
 			searchBooks('');
-		} else {
-			alert('Failed to load books');
+		} catch (err) {
+			alert('Failed to load catalog');
 		}
 	}
 

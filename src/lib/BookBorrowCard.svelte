@@ -20,25 +20,19 @@
 				return;
 			}
 
-			const res = await fetch('/api/borrow', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					title: name,
-					author,
-					ISBN,
-					userId: user.id,
-				}),
+			const res = await window.electron.invoke('db:borrow-new-book', {
+				title: name,
+				author,
+				year: Number(year),
+				ISBN: String(ISBN),
+				userId: user.id,
 			});
 
-			const data = await res.json();
-
-			if (!res.ok) {
-				alert('Error: ' + (data.error || 'Unknown error'));
-				return;
+			if (res.success) {
+				alert(`You have borrowed "${name}" successfully!`);
+			} else {
+				alert('Error: ' + (res.error || 'Unknown error'));
 			}
-
-			alert(`You have borrowed "${name}" successfully!`);
 		} catch (err: any) {
 			alert('Error: ' + (err.message || 'Unknown error'));
 		} finally {
